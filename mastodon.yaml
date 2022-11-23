@@ -5,6 +5,9 @@ Parameters:
   DomainName:
     Description: 'The domain name for the Mastodon instance (e.g. social.cloudonaut.io)'
     Type: String
+  WebDomain:
+    Description: 'The domain name for the web interface, if different than above'
+    Type: String
   SecretKeyBase:
     Description: 'Mastodon config SECRET_KEY_BASE (README explains how to gennerate the secret)'
     Type: String
@@ -34,6 +37,8 @@ Parameters:
     Description: 'Send infrastructure alarms and notifications to this email address. (optional)'
     Type: String
     Default: ''
+Conditions:
+  HasWebDomain: !Not [!Equals ["", !Ref WebDomain]]
 Resources:
   Alerting:
     Type: 'AWS::CloudFormation::Stack'
@@ -62,7 +67,7 @@ Resources:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
       Parameters:
-        Name: !Ref DomainName
+        Name: !If [HasWebDomain, !Ref WebDomain, !Ref DomainName]
       TemplateURL: './node_modules/@cfn-modules/route53-hosted-zone-public/module.yml'
   Vpc:
     Type: 'AWS::CloudFormation::Stack'
@@ -180,9 +185,11 @@ Resources:
         AppEnvironment18Key: 'SMTP_PASSWORD'
         AppEnvironment18Value: !GetAtt 'SmtpPasswordConverter.SmtpPassword'
         AppEnvironment19Key: 'SMTP_FROM_ADDRESS'
-        AppEnvironment19Value: !Sub 'noreply@${DomainName}'
+        AppEnvironment19Value: !If [HasWebDomain, !Sub 'noreply@{WebDomain}', !Sub 'noreply@${DomainName}']
         AppEnvironment20Key: 'S3_REGION'
         AppEnvironment20Value: !Ref 'AWS::Region'
+        AppEnvironment21Key: 'WEB_DOMAIN'
+        AppEnvironment21Value: !Ref 'WebDomain'
         Cpu: '0.5'
         Memory: '1'
         DesiredCount: '1'
@@ -249,9 +256,11 @@ Resources:
         AppEnvironment18Key: 'SMTP_PASSWORD'
         AppEnvironment18Value: !GetAtt 'SmtpPasswordConverter.SmtpPassword'
         AppEnvironment19Key: 'SMTP_FROM_ADDRESS'
-        AppEnvironment19Value: !Sub 'noreply@${DomainName}'
+        AppEnvironment19Value: !If [HasWebDomain, !Sub 'noreply@{WebDomain}', !Sub 'noreply@${DomainName}']
         AppEnvironment20Key: 'S3_REGION'
         AppEnvironment20Value: !Ref 'AWS::Region'
+        AppEnvironment21Key: 'WEB_DOMAIN'
+        AppEnvironment21Value: !Ref 'WebDomain'
         Cpu: '0.25'
         Memory: '0.5'
         DesiredCount: '1'
@@ -316,9 +325,11 @@ Resources:
         AppEnvironment18Key: 'SMTP_PASSWORD'
         AppEnvironment18Value: !GetAtt 'SmtpPasswordConverter.SmtpPassword'
         AppEnvironment19Key: 'SMTP_FROM_ADDRESS'
-        AppEnvironment19Value: !Sub 'noreply@${DomainName}'
+        AppEnvironment19Value: !If [HasWebDomain, !Sub 'noreply@{WebDomain}', !Sub 'noreply@${DomainName}']
         AppEnvironment20Key: 'S3_REGION'
         AppEnvironment20Value: !Ref 'AWS::Region'
+        AppEnvironment21Key: 'WEB_DOMAIN'
+        AppEnvironment21Value: !Ref 'WebDomain'
         Cpu: '0.25'
         Memory: '0.5'
         DesiredCount: '1'
@@ -404,7 +415,7 @@ Resources:
     Properties:
       DkimAttributes:
         SigningEnabled: true
-      EmailIdentity: !Ref DomainName
+      EmailIdentity: !If [HasWebDomain, !Ref WebDomain, !Ref DomainName]
   Dkim1Record:
     Type: AWS::Route53::RecordSet
     Properties:
