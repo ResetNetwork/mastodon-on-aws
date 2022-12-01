@@ -186,7 +186,7 @@ Resources:
         AppEnvironment18Key: 'SMTP_PASSWORD'
         AppEnvironment18Value: !GetAtt 'SmtpPasswordConverter.SmtpPassword'
         AppEnvironment19Key: 'SMTP_FROM_ADDRESS'
-        AppEnvironment19Value: !If [HasWebDomain, !Sub 'noreply@{WebDomain}', !Sub 'noreply@${DomainName}']
+        AppEnvironment19Value: !If [HasWebDomain, !Sub 'noreply@${WebDomain}', !Sub 'noreply@${DomainName}']
         AppEnvironment20Key: 'S3_REGION'
         AppEnvironment20Value: !Ref 'AWS::Region'
         AppEnvironment21Key: 'WEB_DOMAIN'
@@ -257,7 +257,7 @@ Resources:
         AppEnvironment18Key: 'SMTP_PASSWORD'
         AppEnvironment18Value: !GetAtt 'SmtpPasswordConverter.SmtpPassword'
         AppEnvironment19Key: 'SMTP_FROM_ADDRESS'
-        AppEnvironment19Value: !If [HasWebDomain, !Sub 'noreply@{WebDomain}', !Sub 'noreply@${DomainName}']
+        AppEnvironment19Value: !If [HasWebDomain, !Sub 'noreply@${WebDomain}', !Sub 'noreply@${DomainName}']
         AppEnvironment20Key: 'S3_REGION'
         AppEnvironment20Value: !Ref 'AWS::Region'
         AppEnvironment21Key: 'WEB_DOMAIN'
@@ -326,7 +326,7 @@ Resources:
         AppEnvironment18Key: 'SMTP_PASSWORD'
         AppEnvironment18Value: !GetAtt 'SmtpPasswordConverter.SmtpPassword'
         AppEnvironment19Key: 'SMTP_FROM_ADDRESS'
-        AppEnvironment19Value: !If [HasWebDomain, !Sub 'noreply@{WebDomain}', !Sub 'noreply@${DomainName}']
+        AppEnvironment19Value: !If [HasWebDomain, !Sub 'noreply@${WebDomain}', !Sub 'noreply@${DomainName}']
         AppEnvironment20Key: 'S3_REGION'
         AppEnvironment20Value: !Ref 'AWS::Region'
         AppEnvironment21Key: 'WEB_DOMAIN'
